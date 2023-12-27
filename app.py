@@ -76,7 +76,7 @@ def main():
     load_dotenv()
     # Initialize session state
     initialize_session_state()
-    st.title("Book your favourite shows and events 🎞🎟🎫🎭🎪")
+    st.title("Book your favourite movies and shows 🎞🎟🎫")
     # Initialize Streamlit
 
     loader = CSVLoader(file_path="concept_description_pairs.csv")

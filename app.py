@@ -9,7 +9,9 @@ from langchain.memory import ConversationBufferMemory
 from langchain.document_loaders.csv_loader import CSVLoader
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from dotenv import load_dotenv
+import os
 
+os.environ["HF_AUTH_TOKEN"] = "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"
 
 load_dotenv()
 
@@ -26,12 +28,12 @@ def initialize_session_state():
 
 def conversation_chat(query, chain, history):
     result = chain({"question": query, "chat_history": history})
-    history.append((query, result["answer"]))
+    history.append((query, result["answer"])) #to keep track of conversation history
     return result["answer"]
 
 def display_chat_history(chain):
-    reply_container = st.container()
-    container = st.container()
+    reply_container = st.container() #creates a container for displaying replies 
+    container = st.container() #Creates a container for the overall chat interface.
 
     with container:
         with st.form(key='my_form', clear_on_submit=True):
@@ -64,7 +66,8 @@ def create_conversational_chain(vector_store):
     callbacks=[StreamingStdOutCallbackHandler()],
     model_kwargs={"temperature": 0.01, "max_length": 500, "top_p": 1}
 )
-
+    
+    #Creates a ConversationBufferMemory object to store and manage the conversation history
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
     chain = ConversationalRetrievalChain.from_llm(llm=llm, chain_type='stuff',
@@ -79,7 +82,7 @@ def main():
     st.title("Book your favourite movies and shows 🎞🎟🎫")
     # Initialize Streamlit
 
-    loader = CSVLoader(file_path="concept_description_pairs.csv")
+    loader = CSVLoader(file_path="booking_prompts.csv")
 
     data = loader.load()
 
